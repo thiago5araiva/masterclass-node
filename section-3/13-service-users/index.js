@@ -8,9 +8,9 @@ const https = require("https")
 const url = require("url")
 const StringDecoder = require("string_decoder").StringDecoder
 const fs = require("fs")
+const _data = require("./lib/data")
 const handlers = require("./lib/handlers")
-
-// const _data = require("./lib/data")
+const helpers = require("./lib/helpers")
 
 // Testing
 // @TODO delete this
@@ -24,8 +24,7 @@ _data.update("test", "newFile", { fizz: "buzz" }, function (err) {
   console.log("this was the error", err)
 })
 
-const config = require("./config")
-const handlers = require("../13-service-users/lib/handlers")
+const config = require("./lib/config")
 
 const httpServer = http.createServer(function (req, res) {
   unifiedServer(req, res)
@@ -90,10 +89,7 @@ const unifiedServer = function (req, res) {
   })
 }
 
-const handlers = {
-  ping: handlers.ping,
-  users: handlers.users,
-}
+const handlers = {}
 
 handlers.sample = function (data, callback) {
   callback(406, { name: "sample handler" })
