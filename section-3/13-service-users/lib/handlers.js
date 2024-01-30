@@ -2,20 +2,19 @@ const _data = require("./data")
 const helpers = require("./helpers")
 
 const {
-  handleVerifyAllFields,
   handleVerifyPhone,
+  handleVerifyAllFields,
   handleVerifyUpdatableFields,
 } = require("./utils")
 
 const handlers = {}
+handlers._users = {}
 
 handlers.users = (data, callback) => {
   const acceptableMethods = ["post", "get", "put", "delete"]
   if (acceptableMethods.indexOf(data.method) === -1) return callback(405)
   handlers._users[data.method](data, callback)
 }
-
-handlers._users = {}
 
 handlers._users.post = (data, callback) => {
   const verifiedFields = handleVerifyAllFields(data.payload)
