@@ -1,28 +1,18 @@
-/***
- * Primary file of the API
- */
-
-//Dependencies
 const http = require("http")
 const url = require("url")
 
-// The server should respond all requests with a string
-const server = http.createServer(function (req, res) {
-  // get the url and parse it
-  const parsedUrl = url.parse(req.url, true)
-  // get the path
-  const path = parsedUrl.pathname
-  const trimmedPath = path.replace(/^\/+|\/+$/g, "")
-  // get the http methhod
-  const method = req.method.toLowerCase()
-  // send the response
-  res.end("Hello World\n")
-  // log the request
-  console.log(
-    "Request received on path: " + trimmedPath + " with method: " + method
-  )
+const serverPath = (raw) => {
+  const parsed = url.parse(raw, true)
+  const path = parsed.pathname
+  const trimmed = path.replace(/^\/+|\/+$/g, "")
+  if (!trimmed) return raw
+  return trimmed
+}
+
+const server = http.createServer((req, res) => {
+  const pathURL = serverPath(req.url)
+  console.log({ path: pathURL, method })
+  res.end("")
 })
-// Start the server, and have it listen on port 3000
-server.listen(3000, function () {
-  console.log("The server is listening on port 3000 now")
-})
+
+server.listen(3000, () => console.log("Listening on port 3000 now"))

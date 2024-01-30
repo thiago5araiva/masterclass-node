@@ -20,7 +20,6 @@ handlers._users = {}
 handlers._users.post = (data, callback) => {
   const verifiedFields = handleVerifyAllFields(data.payload)
   if (!verifiedFields) return callback(400, { Error: "Missing fields" })
-
   _data.read("users", data.payload.phone, function (err) {
     if (!err) return callback(400, { Error: "A user already exists" })
     const hashedPassword = helpers.hash(data.payload.password)

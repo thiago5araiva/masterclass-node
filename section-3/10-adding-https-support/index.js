@@ -1,8 +1,3 @@
-/***
- * Primary file of the API
- */
-
-//Dependencies
 const http = require("http")
 const https = require("https")
 const url = require("url")
@@ -11,27 +6,33 @@ const fs = require("fs")
 
 const config = require("./config")
 
+const handlers = {}
+
+handlers.sample = (data, callback) => callback(406, { name: "sample handler" })
+handlers.notFound = (data, callback) => callback(404)
+
+const router = {
+  sample: handlers.sample,
+}
+
 const httpServer = http.createServer(function (req, res) {
   unifiedServer(req, res)
 })
-
-//start http server
 httpServer.listen(config.httpPort, function () {
-  console.log(`The server is listening on port ${config.httpPort} `)
+  console.log(`Listen port ${config.httpPort}`)
 })
-// instantiate the https server
 const httpsServerOptions = {
   key: fs.readFileSync("./https/key.pem"),
   cert: fs.readFileSync("./https/cert.pem"),
 }
-const httpsServer = https.createServer(httpsServerOptions, function (req, res) {
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) =>
   unifiedServer(req, res)
-})
-// start the https server
+)
 httpsServer.listen(config.httpsPort, function () {
-  console.log(`The server is listening on port ${config.httpsPort} `)
+  console.log(`Listening on port ${config.httpsPort} `)
 })
-// all the server logic for both the http and https server
+
 const unifiedServer = function (req, res) {
   const parsedUrl = url.parse(req.url, true)
   const path = parsedUrl.pathname
@@ -69,21 +70,6 @@ const unifiedServer = function (req, res) {
       res.end(payloadString)
       console.log("Returning this response: ", statusCode, payloadString)
     })
-
     console.log("Request received with this payload: ", buffer)
   })
-}
-
-const handlers = {}
-
-handlers.sample = function (data, callback) {
-  callback(406, { name: "sample handler" })
-}
-
-handlers.notFound = function (data, callback) {
-  callback(404)
-}
-
-const router = {
-  sample: handlers.sample,
 }

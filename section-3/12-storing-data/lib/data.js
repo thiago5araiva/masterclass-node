@@ -1,102 +1,51 @@
 const fs = require("fs")
 const path = require("path")
-const helpers = require("./helpers")
-// Container for the module (to be exported)
+
 const lib = {}
-
-// Base directory of the data folder
 lib.baseDir = path.join(__dirname, "/../.data/")
+lib.baseFile = (dir, fileName) => lib.baseDir + dir + "/" + fileName + ".json"
 
-// Write data to a file
-lib.create = function (dir, filename, data, callback) {
-  // Open the file for writing
-  fs.open(
-    lib.baseDir + dir + "/" + filename + ".json",
-    "wx",
-    function (err, fileDescriptor) {
-      if (!err && fileDescriptor) {
-        // Convert data to string
-        const stringData = JSON.stringify(data)
-        // Write to file and close it
-        fs.writeFile(fileDescriptor, stringData, function (err) {
-          if (!err) {
-            fs.close(fileDescriptor, function (err) {
-              if (!err) {
-                callback(false)
-              } else {
-                callback("Error closing new file")
-              }
-            })
-          } else {
-            callback("Error writing to new file")
-          }
-        })
-      } else {
-        callback("Could not create new file, it may already exist")
-      }
-    }
-  )
-}
-
-// Read data from a file
-lib.read = function (dir, filename, callback) {
-  fs.readFile(
-    lib.baseDir + dir + "/" + filename + ".json",
-    "utf8",
-    function (err, data) {
-      if (!err && data) {
-        const parsedData = helpers.parseJsonToObject(data)
-        callback(false, parsedData)
-      }
-      callback(err, data)
-    }
-  )
-}
-
-// Update data inside a file
-lib.update = function (dir, filename, data, callback) {
-  // Open the file for writing
-  fs.open(
-    lib.baseDir + dir + "/" + filename + ".json",
-    "r+",
-    function (err, fileDescriptor) {
-      if (!err && fileDescriptor) {
-        // Convert data to string
-        const stringData = JSON.stringify(data)
-        // Truncate the file
-        fs.ftruncate(fileDescriptor, function (err) {
-          if (!err) {
-            // Write to file and close it
-            fs.writeFile(fileDescriptor, stringData, function (err) {
-              if (!err) {
-                fs.close(fileDescriptor, function (err) {
-                  if (!err) {
-                    callback(false)
-                  } else {
-                    callback("Error closing existing file")
-                  }
-                })
-              } else {
-                callback("Error writing to existing file")
-              }
-            })
-          } else {
-            callback("Error truncating file")
-          }
-        })
-      } else {
-        callback("Could not open the file for updating, it may not exist yet")
-      }
-    }
-  )
-}
-
-lib.delete = function (dir, filename, callback) {
-  // Unlink the file
-  fs.unlink(lib.baseDir + dir + "/" + filename + ".json", function (err) {
-    callback(err)
+lib.create = (dir, filename, data, callback) => {
+  fs.open(lib.baseFile(dir, filename), "wx", (err, fileDescriptor) => {
+    if (err) return callback("Could not create new file, it may already exist")
+    const stringData = JSON.stringify(data)
+    fs.writeFile(fileDescriptor, stringData, (err) => {
+      if (err) return callback("Error writing to new file")
+      fs.close(fileDescriptor, (err) => {
+        if (err) return callback("Error closing new file")
+        callback(false)
+      })
+    })
   })
 }
 
-// Export the module
+lib.read = (dir, filename, callback) => {
+  fs.readFile(lib.baseFile(dir, filename), "utf8", (err, data) => {
+    if (err) return callback(err, data)
+    const parsedData = JSON.stringify(data)
+    callback(false, parsedData)
+  })
+}
+
+lib.update = (dir, filename, data, callback) => {
+  fs.open(lib.baseFile(dir, filename), "r+", (err, fileDescriptor) => {
+    if (err) return callback("Could not open the file for updating")
+    const stringData = JSON.stringify(data)
+    fs.ftruncate(fileDescriptor, (err) => {
+      if (err) return callback("Error truncating file")
+      fs.writeFile(fileDescriptor, stringData, (err) => {
+        if (err) return callback("Error writing to existing file")
+        fs.close(fileDescriptor, (err) => {
+          if (err) return callback("Error closing existing file")
+          callback(false)
+        })
+      })
+    })
+  })
+}
+
+lib.delete = (dir, filename, callback) => {
+  fs.unlink(lib.baseFile(dir, filename), (err) => callback(err))
+}
+
 module.exports = lib

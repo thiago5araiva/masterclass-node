@@ -1,11 +1,15 @@
-/***
- * Primary file of the API
- */
-
-//Dependencies
 const http = require("http")
 const url = require("url")
 const StringDecoder = require("string_decoder").StringDecoder
+
+const handlers = {}
+
+handlers.sample = (data, callback) => callback(406, { name: "sample handler" })
+handlers.notFound = (data, callback) => callback(404)
+
+const router = {
+  sample: handlers.sample,
+}
 
 const server = http.createServer(function (req, res) {
   const parsedUrl = url.parse(req.url, true)
@@ -49,19 +53,4 @@ const server = http.createServer(function (req, res) {
   })
 })
 
-server.listen(3000, function () {
-  console.log("The server is listening on port 3000 now")
-})
-const handlers = {}
-
-handlers.sample = function (data, callback) {
-  callback(406, { name: "sample handler" })
-}
-
-handlers.notFound = function (data, callback) {
-  callback(404)
-}
-
-const router = {
-  sample: handlers.sample,
-}
+server.listen(3000, () => console.log("Server on port 3000 now"))

@@ -1,0 +1,12 @@
+# IDE and editors
+.idea/
+.vscode/
+
+# env files and secrets
+.env
+
+# https certs
+*.pem
+
+# generated data directory
+.data/**

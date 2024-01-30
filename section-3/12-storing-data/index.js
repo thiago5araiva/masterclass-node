@@ -1,53 +1,56 @@
-/***
- * Primary file of the API
- */
-
-//Dependencies
 const http = require("http")
 const https = require("https")
 const url = require("url")
 const StringDecoder = require("string_decoder").StringDecoder
-const fs = require("fs")
-const handlers = require("./lib/handlers")
 
-// const _data = require("./lib/data")
-
-// Testing
-// @TODO delete this
-// _data.create("test", "newFile", { foo: "bar" }, function (err) {
-//   console.log("this was the error", err)
-// })
-// _data.read("test", "newFile", function (err, data) {
-//   console.log("this was the error", err, "and this was the data", data)
-// })
-_data.update("test", "newFile", { fizz: "buzz" }, function (err) {
-  console.log("this was the error", err)
-})
-
-const config = require("./config")
-const handlers = require("../13-service-users/lib/handlers")
-
-const httpServer = http.createServer(function (req, res) {
-  unifiedServer(req, res)
-})
-
-//start http server
-httpServer.listen(config.httpPort, function () {
-  console.log(`The server is listening on port ${config.httpPort} `)
-})
-// instantiate the https server
-const httpsServerOptions = {
-  key: fs.readFileSync("./https/key.pem"),
-  cert: fs.readFileSync("./https/cert.pem"),
+const handlers = {}
+handlers.sample = function (data, callback) {
+  callback(406, { name: "sample handler" })
 }
-const httpsServer = https.createServer(httpsServerOptions, function (req, res) {
+
+handlers.notFound = function (data, callback) {
+  callback(404)
+}
+
+const router = {
+  sample: handlers.sample,
+  ping: handlers.ping,
+  users: handlers.users,
+}
+
+const { httpPort, httpsPort, httpsServerOptions } = require("./config")
+const _data = require("./lib/data")
+
+/**
+  _data.create("test", "newFile", { fizz: "buzz" }, (err) => {
+    if (err) console.log(err, data)
+    console.log("File, created successfully")
+  })
+
+  _data.read("test", "newFile", (err, data) => {
+    if (err) console.log(err, data)
+    console.log("File, read successfully", data)
+  })
+
+  _data.update("test", "newFile", { fizz: "bozzo" }, (err) => {
+    if (err) console.log(err)
+    console.log("File updated successfully")
+  })
+
+  _data.delete("test", "newFile", (err) => {
+    if (err) console.log(err)
+    console.log("File deleted successfully")
+  })
+*/
+
+const httpServer = http.createServer((req, res) => unifiedServer(req, res))
+httpServer.listen(httpPort, () => console.log(`Server on port ${httpPort}`))
+
+const httpsServer = https.createServer(httpsServerOptions, (req, res) => {
   unifiedServer(req, res)
 })
-// start the https server
-httpsServer.listen(config.httpsPort, function () {
-  console.log(`The server is listening on port ${config.httpsPort} `)
-})
-// all the server logic for both the http and https server
+httpsServer.listen(httpsPort, () => console.log(`Server on port ${httpsPort}`))
+
 const unifiedServer = function (req, res) {
   const parsedUrl = url.parse(req.url, true)
   const path = parsedUrl.pathname
@@ -88,21 +91,4 @@ const unifiedServer = function (req, res) {
 
     console.log("Request received with this payload: ", buffer)
   })
-}
-
-const handlers = {
-  ping: handlers.ping,
-  users: handlers.users,
-}
-
-handlers.sample = function (data, callback) {
-  callback(406, { name: "sample handler" })
-}
-
-handlers.notFound = function (data, callback) {
-  callback(404)
-}
-
-const router = {
-  sample: handlers.sample,
 }

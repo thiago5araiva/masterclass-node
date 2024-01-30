@@ -7,8 +7,8 @@ enviroments.staging = {
   envName: "staging",
 }
 enviroments.production = {
-  httpPort: 5000,
-  httpsPort: 5001,
+  httpPort: 6000,
+  httpsPort: 6001,
   envName: "production",
 }
 

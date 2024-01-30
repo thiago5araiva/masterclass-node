@@ -1,0 +1,24 @@
+{
+  "name": "the-nodejs-master-class",
+  "version": "1.0.0",
+  "description": "My learning process of the course 'The Node.js Master Class'",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "lib": "lib"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "serve": "npx nodemon index.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/itsdorosh/the-nodejs-master-class.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/itsdorosh/the-nodejs-master-class/issues"
+  },
+  "homepage": "https://github.com/itsdorosh/the-nodejs-master-class#readme"
+}
