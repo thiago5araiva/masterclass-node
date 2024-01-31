@@ -38,11 +38,29 @@ const handleVerifyAllFields = (params) => {
   return validParams.includes(undefined) ? false : true
 }
 
+const handleVerifyId = (value) => {
+  const id = String(value).trim()
+  return id.length === 20 ? id : undefined
+}
+
+const handleVerifyExtend = (value) => {
+  const extend = Boolean(value)
+  return extend ? extend : undefined
+}
+
+const handleVerifyToken = (value) => {
+  const token = String(value).trim()
+  return token ? token : undefined
+}
+
 module.exports = {
+  handleVerifyToken,
+  handleVerifyExtend,
   handleVerifyName,
   handleVerifyPhone,
   handleVerifyPassword,
   handleVerifyTosAgreement,
   handleVerifyAllFields,
   handleVerifyUpdatableFields,
+  handleVerifyId,
 }

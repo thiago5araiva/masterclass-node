@@ -1,10 +1,7 @@
-const http = require("http")
-const https = require("https")
 const url = require("url")
 const StringDecoder = require("string_decoder").StringDecoder
 
-const { httpPort, httpsPort, httpsServerOptions } = require("../lib/config")
-const handlers = require("../lib/handlers")
+const handlers = require("../lib/handlers/index.js")
 const helpers = require("../lib/helpers")
 
 const router = require("../routes")
@@ -41,7 +38,7 @@ const server = (req, res) => {
       statusCode = typeof statusCode == "number" ? statusCode : 200
       payload = typeof payload == "object" ? payload : {}
       const payloadString = JSON.stringify(payload)
-      res.setHeader("Content-Type", "application/json")
+      // res.setHeader("Content-Type", "application/json")
       res.writeHead(statusCode)
       res.end(payloadString)
     })
