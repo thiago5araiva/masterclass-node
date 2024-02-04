@@ -8,6 +8,11 @@ enviroments.staging = {
   envName: "staging",
   hashingSecret: "thisIsASecret",
   maxChecks: 5,
+  twilio: {
+    accountSid: "ACb4e4e7d3f2b0b3e6e4e6e4e6e4e6e4e6",
+    authToken: "",
+    fromPhone: "",
+  },
 }
 enviroments.production = {
   httpPort: 5000,
@@ -15,6 +20,11 @@ enviroments.production = {
   envName: "production",
   hashingSecret: "thisIsASecret",
   maxChecks: 10,
+  twilio: {
+    accountSid: "",
+    authToken: "",
+    fromPhone: "",
+  },
 }
 
 const currentEnviroment =
